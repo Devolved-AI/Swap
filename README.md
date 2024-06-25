@@ -35,7 +35,7 @@ It is recommended you set environmental variables for the following:
 - **T2** (This would be the wrapped token contract address when you call the *deposit()* function)
 - **FROM** (this is the wallet address the funds are coming FROM)
 - **TO** (this is the wallet address the funds are going TO)
-- **PRIV** (This is the Private Key corresponding to the FROM wallet address. This address neds to sign (approve) the transaction)
+- **PRIV** (This is the Private Key corresponding to the FROM wallet address. This address needs to sign (approve) the transaction)
 
 ## Usage
 

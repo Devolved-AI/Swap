@@ -34,7 +34,7 @@ This script allows you to perform various cryptocurrency actions such as swappin
 
 To use the script, run the following command in your terminal:
 
-**WRAP(Convert Native Token To Wrapped Token at 1:1 ratio)**
+**WRAP (Convert Native Token To Wrapped Token at 1:1 ratio)**
 ```
 node main.js <Rpc_Url> <Wrapped_Token_Contract_Address> 0x0000000000000000000000000000000000000000 <Amount> wrap <Private_Key> <From_Wallet_Address> <To_Wallet_Address> <Gas_Fee>
     - Set an amount (in ethers, not wei) for <Amount> (ex: 0.1, 6.25, 100)

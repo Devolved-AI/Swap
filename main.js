@@ -2,51 +2,41 @@ const { ethers } = require('ethers');
 const wrap = require('./wrap');
 const swapTokens = require('./swap');
 const addLiquidity = require('./liquidity');
-const unwrap = require('./unwrap');
 
-// Parse command-line arguments
-const args = process.argv.slice(2);
-const network = args[0];
-const tokenAddress1 = args[1];
-const amount1 = args[2];
-const privateKey = args[3];
-const fromAddress = args[4];
-const toAddress = args[5];
-const gasFee = args[6];
-const action = args[7];
+// Get the network, token addresses, amounts, action, private key, from address, to address, and gas fee from command-line arguments
+const network = process.argv[2];
+const tokenAddress1 = process.argv[3];
+const tokenAddress2 = process.argv[4];
+const amount1 = process.argv[5];
+const action = process.argv[6]; // 'swap', 'wrap', or 'liquidity'
+const privateKey = process.argv[7];
+const fromAddress = process.argv[8];
+const toAddress = process.argv[9];
+const gasFee = process.argv[10]; // Gas fee in Gwei
 
-let tokenAddress2, amount2;
-
-// Validation Logic
-if (action !== 'swap' && action !== 'wrap' && action !== 'liquidity' && action !== 'unwrap') {
-  console.error('Invalid action. Use "swap", "wrap", "liquidity", or "unwrap"');
+// Validate the action first
+if (action !== 'swap' && action !== 'wrap' && action !== 'liquidity') {
+  console.error('Invalid action. Use "swap", "wrap", or "liquidity"');
   process.exit(1);
 }
 
 // Validate other arguments based on the action
-if (!ethers.utils.isAddress(tokenAddress1)) {
-  console.error('Invalid token address for tokenAddress1');
+if (!ethers.utils.isAddress(tokenAddress1) || !ethers.utils.isAddress(tokenAddress2)) {
+  console.error('Invalid token address');
   process.exit(1);
-}
-
-if (action === 'swap' || action === 'liquidity') {
-  tokenAddress2 = args[8];
-  amount2 = args[9];
-  
-  if (!ethers.utils.isAddress(tokenAddress2)) {
-    console.error('Invalid token address for tokenAddress2');
-    process.exit(1);
-  }
-  
-  if (isNaN(parseFloat(amount2)) || parseFloat(amount2) <= 0) {
-    console.error('Invalid amount2');
-    process.exit(1);
-  }
 }
 
 if (isNaN(parseFloat(amount1)) || parseFloat(amount1) <= 0) {
   console.error('Invalid amount1');
   process.exit(1);
+}
+
+if (action === 'liquidity') {
+  const amount2 = process.argv[6];
+  if (isNaN(parseFloat(amount2)) || parseFloat(amount2) <= 0) {
+    console.error('Invalid amount2 for liquidity');
+    process.exit(1);
+  }
 }
 
 if (!ethers.utils.isHexString(privateKey, 32)) {
@@ -67,31 +57,28 @@ if (isNaN(parseFloat(gasFee)) || parseFloat(gasFee) <= 0) {
 // Main function to execute the appropriate action
 async function main() {
   console.log(`Connecting to network: ${network}`);
-  console.log(`RPC URL: ${network}`);
+  console.log(`RPC URL: ${process.argv[2]}`);
   
   try {
-    const provider = new ethers.providers.JsonRpcProvider(network);
+    const provider = new ethers.providers.JsonRpcProvider(process.argv[2]);
     
     console.log('Checking network connection...');
-    const networkInfo = await provider.getNetwork();
-    console.log(`Connected to network: ${networkInfo.name} (chainId: ${networkInfo.chainId})`);
+    const network = await provider.getNetwork();
+    console.log(`Connected to network: ${network.name} (chainId: ${network.chainId})`);
     
+    const signer = new ethers.Wallet(privateKey, provider);
+
     const gasPrice = ethers.utils.parseUnits(gasFee, 'gwei');
     const gasLimit = 300000; // Adjust as needed
 
     if (action === 'swap') {
-      const amountInEther = ethers.utils.parseEther(amount1);
-      await swapTokens(provider, privateKey, tokenAddress1, tokenAddress2, amountInEther, gasPrice, gasLimit);
+      await swapTokens(signer, tokenAddress1, tokenAddress2, amount1, gasPrice, gasLimit);
     } else if (action === 'wrap') {
       const nativeTokenAmount = ethers.utils.parseEther(amount1);
-      await wrap(provider, privateKey, nativeTokenAmount, tokenAddress1);
+      await wrap(signer, nativeTokenAmount, tokenAddress1);
     } else if (action === 'liquidity') {
-      const amount1InEther = ethers.utils.parseEther(amount1);
-      const amount2InEther = ethers.utils.parseEther(amount2);
-      await addLiquidity(provider, privateKey, tokenAddress1, tokenAddress2, amount1InEther, amount2InEther, gasPrice, gasLimit);
-    } else if (action === 'unwrap') {
-      const wrappedTokenAmount = ethers.utils.parseEther(amount1);
-      await unwrap(provider, privateKey, tokenAddress1, wrappedTokenAmount);
+      const amount2 = process.argv[6];
+      await addLiquidity(signer, tokenAddress1, tokenAddress2, amount1, amount2, gasPrice, gasLimit);
     }
   } catch (error) {
     console.error('An error occurred:', error.message);

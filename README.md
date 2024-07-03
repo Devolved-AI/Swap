@@ -21,6 +21,8 @@ PRIVATE_KEY=[YOUR-PRIVATE-KEY-GOES-HERE]
 ETHERSCAN_API_KEY=[YOUR-ETHERSCAN-API-KEY-GOES-HERE]
 ```
 
+# Copy the foundry.toml file and lac ei tin the AMM root directory
+
 # Copy the AMM.sol file and place it in the /src directory
 
 # Copy the AMM.t.sol file and place it in the /test directory
@@ -32,7 +34,7 @@ ETHERSCAN_API_KEY=[YOUR-ETHERSCAN-API-KEY-GOES-HERE]
 forge test
 ```
 
-4. If all test pass, run the deploy script to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
+4. If all test pass, run the deploy script **from the AMM root directory** to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
 
 ```
 forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv

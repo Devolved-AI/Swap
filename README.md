@@ -2,7 +2,7 @@
 Simple AMM swap that swaps between 2 tokens. This repo's structure is assuming you use **FOUNDRY**
 
 # START
-**You must have Foundry installed.**
+**This repo's instructions are assuming you are using Foundry. You are more than welome to use another IDE (ex Hardhat), but the instructions may be different.**
 ```
 forge init AMM
 ```

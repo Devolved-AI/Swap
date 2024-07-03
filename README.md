@@ -1,61 +1,179 @@
 # Simple Swap
+Simple AMM swap that swaps between 2 tokens. This repo's structure is assuming you use **FOUNDRY**
 
-A Command Line Crypto Exchange Script
-
-# Flowchart
-
-[![](https://mermaid.ink/img/pako:eNptU9tuGjEQ_ZWRHyuSD0BqJWAhQQoSLYn6sJsHZz2wbmzP1hcIAv69sw4LVO3b2nN8LjOzB1GTQjEUGy_bBp6Lyo3Kl4D-Fe7uvh3nLqKXdQyw07E5wrhcSO3uf4XXyo0zYiKNCVCTtdKpcITJYbRYwMpKH2FCLnavT5Wr3CTDVzvZQqR3dIwtyif9O2ml4x6WRIZJi4x6aZWMCB7ZyBbDAFqva-zYe8QKnQJKsU3xQje6yoyUAtNzH2FaTjx2jP_ojTJ86WmrFV6YppWb5sJCuwhPy1uJz0KBLQV91S6u2j_Q0hZv5WflOHnX8Txn-EU3p7ihn1Vulgs_udvKyx0Hp5Z81OSkgdBIj0DrWzuz_zXsLz88zW5ALkTJYZhQpTrCmrxNRh7hofyAL7CHr_DOvh7O6XjsVju8bXw_8e8JPYd6LKcfdSPdBmHu1sRvH8_x-6H1wSCktjX7AWCs73mHrlT9euXtAooNeihwpjuXkWoyrDwv8820prAPES0LzT83jyzPQL5pk5vMtGIgLPuWWvFCHyoHUAnmtFiJIX8qXMtkYiUqd2KoTJFWe1eLYfQJB8JT2jRiuJYm8CnljhZa8o9hz7enPyeXHGA?type=png)](https://mermaid.live/edit#pako:eNptU9tuGjEQ_ZWRHyuSD0BqJWAhQQoSLYn6sJsHZz2wbmzP1hcIAv69sw4LVO3b2nN8LjOzB1GTQjEUGy_bBp6Lyo3Kl4D-Fe7uvh3nLqKXdQyw07E5wrhcSO3uf4XXyo0zYiKNCVCTtdKpcITJYbRYwMpKH2FCLnavT5Wr3CTDVzvZQqR3dIwtyif9O2ml4x6WRIZJi4x6aZWMCB7ZyBbDAFqva-zYe8QKnQJKsU3xQje6yoyUAtNzH2FaTjx2jP_ojTJ86WmrFV6YppWb5sJCuwhPy1uJz0KBLQV91S6u2j_Q0hZv5WflOHnX8Txn-EU3p7ihn1Vulgs_udvKyx0Hp5Z81OSkgdBIj0DrWzuz_zXsLz88zW5ALkTJYZhQpTrCmrxNRh7hofyAL7CHr_DOvh7O6XjsVju8bXw_8e8JPYd6LKcfdSPdBmHu1sRvH8_x-6H1wSCktjX7AWCs73mHrlT9euXtAooNeihwpjuXkWoyrDwv8820prAPES0LzT83jyzPQL5pk5vMtGIgLPuWWvFCHyoHUAnmtFiJIX8qXMtkYiUqd2KoTJFWe1eLYfQJB8JT2jRiuJYm8CnljhZa8o9hz7enPyeXHGA)
-
-## Description
-
-This script allows you to perform various cryptocurrency actions such as swapping tokens, depositing tokens, adding liquidity, and performing cross-chain swaps using the command line.
-
-## Prerequisites
-
-- Node.js (v12 or higher)
-- npm (Node Package Manager)
-- Ethers.js (install using `npm install ethers`)
-- An Infura project ID (for connecting to the Ethereum network)
-
-## Installation
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/DevolvedAI/Swap
-    cd Swap
-    ```
-
-2. Install the required dependencies:
-    ```sh
-    npm install ethers
-    ```
-
-## Usage
-
-To use the script, run the following command in your terminal:
-
-**WRAP (Convert Native Token To Wrapped Token at 1:1 ratio)**
+# START
+**You must have Foundry installed.**
 ```
-node main.js <Rpc_Url> <Wrapped_Token_Contract_Address> 0x0000000000000000000000000000000000000000 <Amount> wrap <Private_Key> <From_Wallet_Address> <To_Wallet_Address> <Gas_Fee>
-    - Set an amount (in ethers, not wei) for <Amount> (ex: 0.1, 6.25, 100)
-    - Set the gas fee (in gwei) for <GasFee> (ex: 10)
+forge init AMM
 ```
 
-**LIQUIDITY (Creates Liquidity Pair and Sets Initial Liquidity Pool)**
+This will create a directory called AMM with all the necessary files and subdirectories.
+
+Next, create an .env file in the AMM root directory
+
 ```
-WORK IN PROGRESS. CURRENTLY TESTING.
+nano .env
 ```
 
-**SWAP (Performs swap between two tokens on same blockchain)**
+Modify the .env file and provide your **private key** and your etherscan, polygonscan, etc. **api key**
 ```
-WORK IN PROGRESS. CURRENTLY TESTING.
+PRIVATE_KEY=[YOUR-PRIVATE-KEY-GOES-HERE]
+ETHERSCAN_API_KEY=[YOUR-ETHERSCAN-API-KEY-GOES-HERE]
 ```
 
-**CROSS CHAIN (Performs swap between two tokens on different blockchains)**
+# Copy the AMM.sol file and place it in the /src directory
+
+# Copy the AMM.t.sol file and place it in the /test directory
+
+# Copy the AMM.s.sol file and place it in the /script directory
+
+# Run the test
 ```
-WORK IN PROGRESS. CURRENTLY TESTING. THIS COMMAND USES THE BRIDGE CONTRACT WHICH HAS BEEN TESTED IN FOUNDRY AND DEPLOYED ON POLYGON'S AMOY TESTNET.
-CONTRACT ADDRESS IS 0x9AfBc22eb8F3101d9D9968D89644380FDCaF3565
+forge test
 ```
+
+4. If all test pass, run the deploy script to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
+
+```
+forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv
+```
+
+5. Your contract should be successfully deployed and verified on the blockchain. **Make note of the contract addresses.**
+
+6. If you decide to commit this codebase to your Github repo, **DO NOT COPY OVER YOUR .ENV FILE CREDENTIALS!!!**
+
+# INTERACTION
+
+Run this command **from the AMM root directory** to output a list of the functions:
+```
+cat out/AMM.sol/AMM.json | jq -r '.abi | map(select(.type == "function")) | .[] | "\(.name)(\(.inputs | map(.type + " " + .name) | join(", ")))"'
+```
+
+If done correctly, a list fo the function should output to the console along with their arguments and data types like below:
+
+```
+addLiquidity(uint256 _amount0, uint256 _amount1)
+balanceOf(address )
+initialize(address _token0, address _token1)
+initialized()
+removeLiquidity(uint256 _shares)
+reserve0()
+reserve1()
+swap(address _tokenIn, uint256 _amountIn)
+token0()
+token1()
+totalSupply()
+```
+
+
+# CREATE ENVIRONMENTAL VARIABLES
+Run these commands to set environmental variables **during this session only.**
+```
+export PRIV=[YOUR-PRIVATE-KEY]
+export RPC=[YOUR-RPC-URL]
+export ADD=[YOUR-AMM-CONTRACT-ADDRESS]
+export T1=[CONTRACT-ADDRESS-OF-TOKEN-1]
+export T2=[CONTRACT-ADDRESS-OF-TOKEN-2]
+```
+
+# CREATE TOKEN PAIR
+```
+cast send $ADD "initialize(address,address)" $T1 $2 --rpc-url $RPC --private-key $PRIV
+```
+
+# APPROVE THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
+
+For Token 1
+```
+cast send $T1 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
+
+For Token 2
+```
+cast send $T2 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
+
+**PLEASE NOTE:** The approval amounts must be specified in wei since Foundry cast does not support decimals or floating point numbers. To convert your decimals and numbers to Wei format, [Go Here](https://eth-converter.com)
+
+# ADD LIQUIDITY
+```
+cast send $ADD "addLiquidity(uint256,uint256)" [TOKEN-1-AMOUNT-IN-WEI] [TOKEN-2-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
+
+The above command will initialize the liquidity pair with Token 1 = Token 2. For example, if you wanted to make 1 WETH equal to 5000 AGC, you would run the command like this:
+
+```
+cast send $ADD "addLiquidity(uint256,uint256)" 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
+```
+
+# SWAP TOKENS
+```
+CURRENTLY TESTING. WILL UPDATE SOON.
+```
+
+# REMOVE LIQUIDITY
+```
+CURRENTLY TESTING. WILL UPDATE SOON.
+```
+
+
+# READ FUNCTIONS (These DO NOT modify the state of the blockchain so no gas will be charged to call these functions)
+
+Check to see if liquidity pair is intialized:
+```
+cast call $ADD "initialized()(uint256)" --rpc-url $RPC
+```
+The output of the above will be a **boolean** value. 0 = FALSE (no liquidity pair was initialized) or 1 = TRUE (liquidity pair was initalized)
+Get total supply of pool:
+```
+cast call $ADD "totalSupply()(uint256)" --rpc-url $RPC
+```
+
+Get Token 1 contract address:
+```
+cast call $T1 "token0()(address)" --rpc-url $RPC
+```
+
+Get Token 2 contract address:
+```
+cast call $T2 "token1()(address)" --rpc-url $RPC
+```
+
+Get Token 1 pool reserves:
+```
+cast call $ADD "reserve0()(uint256)" --rpc-url $RPC
+```
+
+Get Token 2 pool reserves:
+```
+cast call $ADD "reserve1()(uint256)" --rpc-url $RPC
+```
+
+# TODOS:
+
+1. Incorporate Impermnent Loss at 3%
+2. Incorporate Max Leverage at 5%
+3. Incprporate Swap Staking (not validator staking) for 30 days
+4. Incorporate Vesting for 1 year
+5. Incorporate a withdrawal cooldown of 48 hours
+6. Enhance security of swap to make it more robust
+
+# QUESTIONS
+
+Please reach out to me on Slack if you have any questions with the swap or if you are having issues. Or, you can open an issue here on Github.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

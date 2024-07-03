@@ -108,16 +108,20 @@ The above command will initialize the liquidity pair with Token 1 = Token 2. For
 cast send $ADD "addLiquidity(uint256,uint256)" 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
 ```
 
-# SWAP TOKENS
+# PERFORM THE SWAP FROM TOKEN 1 TO TOKEN 2
 ```
-CURRENTLY TESTING. WILL UPDATE SOON.
+cast send $ADD "swap(address,uint256)" $T1 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
+
+# PERFORM THE SWAP FROM TOKEN 2 TO TOKEN 1
+```
+cast send $ADD "swap(address,uint256)" $T2 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
 # REMOVE LIQUIDITY
 ```
 CURRENTLY TESTING. WILL UPDATE SOON.
 ```
-
 
 # READ FUNCTIONS (These DO NOT modify the state of the blockchain so no gas will be charged to call these functions)
 

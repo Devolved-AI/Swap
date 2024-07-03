@@ -126,6 +126,7 @@ Check to see if liquidity pair is intialized:
 cast call $ADD "initialized()(uint256)" --rpc-url $RPC
 ```
 The output of the above will be a **boolean** value. 0 = FALSE (no liquidity pair was initialized) or 1 = TRUE (liquidity pair was initalized)
+
 Get total supply of pool:
 ```
 cast call $ADD "totalSupply()(uint256)" --rpc-url $RPC

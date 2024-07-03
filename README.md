@@ -21,7 +21,7 @@ PRIVATE_KEY=[YOUR-PRIVATE-KEY-GOES-HERE]
 ETHERSCAN_API_KEY=[YOUR-ETHERSCAN-API-KEY-GOES-HERE]
 ```
 
-# Copy the foundry.toml file and lac ei tin the AMM root directory
+# Copy the foundry.toml file and place it in the AMM root directory
 
 # Copy the AMM.sol file and place it in the /src directory
 

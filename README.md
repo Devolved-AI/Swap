@@ -1,5 +1,56 @@
-# Simple Swap
-Simple AMM swap that swaps between 2 tokens. This repo's structure is assuming you use **FOUNDRY**
+# Automated Market Maker (AMM) Smart Contract
+
+This contract implements an Automated Market Maker (AMM) for two ERC20 tokens. Here's a brief explanation of what it does and its security features:
+
+## Functionality:
+
+1. Allows users to swap between two tokens.
+2. Enables users to add liquidity by depositing both tokens.
+3. Allows liquidity providers to remove their liquidity and receive tokens back.
+
+## Security Features:
+
+### 1. ReentrancyGuard:
+- Prevents reentrant calls to critical functions like `swap`, `addLiquidity`, and `removeLiquidity`.
+- Protects against potential reentrancy attacks.
+
+### 2. Ownable:
+- Restricts certain functions (like `pause` and `unpause`) to the contract owner.
+- Provides basic access control.
+
+### 3. Pausable:
+- Allows the owner to pause and unpause contract functionality.
+- Useful for emergency situations or upgrades.
+
+### 4. Custom Lock Mechanism:
+- The `lock` modifier prevents concurrent execution of critical functions.
+- Adds an extra layer of protection against potential exploits.
+
+### 5. Input Validation:
+- Checks for valid token addresses in the constructor.
+- Ensures input amounts are greater than zero in various functions.
+
+### 6. Minimum Liquidity:
+- Implements a minimum liquidity mechanism to prevent division by zero errors.
+
+### 7. Immutable State Variables:
+- `token0` and `token1` are declared as `immutable`, preventing accidental modifications.
+
+### 8. Events:
+- Emits events for important actions (`LiquidityAdded`, `LiquidityRemoved`, `Swap`).
+- Allows for off-chain monitoring and tracking of contract activities.
+
+### 9. Constant Values:
+- Uses `constant` for fixed values like `MINIMUM_LIQUIDITY`.
+
+### 10. Internal Functions:
+- Uses `private` functions for internal operations, limiting external access.
+
+### 11. Checks-Effects-Interactions Pattern:
+- Generally follows this pattern in functions like `swap` and `addLiquidity`.
+
+**Note:** While these security features provide a good foundation, it's important to note that no smart contract is 100% secure, and additional measures like formal verification and thorough auditing are recommended for production use.
+
 
 # START
 **This repo's instructions are assuming you are using Foundry. You are more than welome to use another IDE (ex Hardhat), but the instructions may be different.**

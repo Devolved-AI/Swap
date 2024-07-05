@@ -2,7 +2,7 @@
 
 This contract implements an Automated Market Maker (AMM) for two ERC20 tokens. Below is a brief explanation of what this contract does and its security features.
 
-A sample deployment of this smart contract and proof of its verification can be found [on the Sepolia testnet](https://sepolia.etherscan.io/address/0xE506519eCd0288628c71Ba754f5A20d0Fa8FA7f6).
+A sample deployment of this smart contract and proof of its verification can be found [on the Sepolia testnet (https://sepolia.etherscan.io/address/0x1d826a7f7846750b6d6d340f57616741b3b2eb36).
 
 
 ## Functionality:

@@ -75,28 +75,35 @@ PRIVATE_KEY=[YOUR-PRIVATE-KEY-GOES-HERE]
 ETHERSCAN_API_KEY=[YOUR-ETHERSCAN-API-KEY-GOES-HERE]
 ```
 
-# Copy the foundry.toml file and place it in the AMM root directory
+Next, clone the OpenZeppelin library by running this command in the root directory.
+```
+forge install --no-commit OpenZeppelin/openzeppelin-contracts
+```
 
-# Copy the AMM.sol file and place it in the /src directory
+Manually do the following after installing OpenZeppelin contracts:
+```
+1. Copy the foundry.toml file and place it in the AMM root directory
+2. Copy the AMM.sol file and place it in the /src directory
+3. Copy the AMM.t.sol file and place it in the /test directory
+4. Copy the AMM.s.sol file and place it in the /script directory
+```
 
-# Copy the AMM.t.sol file and place it in the /test directory
-
-# Copy the AMM.s.sol file and place it in the /script directory
-
-# Run the test
+# Run Tests
 ```
 forge test
 ```
 
-4. If all test pass, run the deploy script **from the AMM root directory** to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
+If all test pass, run the deploy script **from the AMM root directory** to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
 
 ```
 forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv
 ```
 
-5. Your contract should be successfully deployed and verified on the blockchain. **Make note of the contract addresses.**
+Your contract should be successfully deployed and verified on the blockchain. **Make note of the contract addresses.**
 
-6. If you decide to commit this codebase to your Github repo, **DO NOT COPY OVER YOUR .ENV FILE CREDENTIALS!!!**
+If you decide to commit this codebase to your Github repo, **DO NOT COPY OVER YOUR .ENV FILE CREDENTIALS!!!**
+
+Great job! Now, it is time to interact with the newly deployed contract.
 
 # INTERACTION
 

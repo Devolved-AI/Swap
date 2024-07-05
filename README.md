@@ -115,20 +115,18 @@ cat out/AMM.sol/AMM.json | jq -r '.abi | map(select(.type == "function")) | .[] 
 If done correctly, a list fo the function should output to the console along with their arguments and data types like below:
 
 ```
-addLiquidity(uint256 _amount0, uint256 _amount1)
-balanceOf(address )
-owner()
+addLiquidity(uint256 _pairId, uint256 _amount0, uint256 _amount1)
+createPair(address _token0, address _token1)
+getBalance(uint256 _pairId, address _account)
+getPairId(address , address )
+getPairInfo(uint256 _pairId)
+liquidityPairs(uint256 )
+pairCount()
+pairInfo(uint256 )
 pause()
 paused()
-removeLiquidity(uint256 _shares)
-renounceOwnership()
-reserve0()
-reserve1()
-swap(address _tokenIn, uint256 _amountIn)
-token0()
-token1()
-totalSupply()
-transferOwnership(address newOwner)
+removeLiquidity(uint256 _pairId, uint256 _shares)
+swap(uint256 _pairId, address _tokenIn, uint256 _amountIn)
 unpause()
 ```
 

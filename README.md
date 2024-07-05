@@ -110,15 +110,19 @@ If done correctly, a list fo the function should output to the console along wit
 ```
 addLiquidity(uint256 _amount0, uint256 _amount1)
 balanceOf(address )
-initialize(address _token0, address _token1)
-initialized()
+owner()
+pause()
+paused()
 removeLiquidity(uint256 _shares)
+renounceOwnership()
 reserve0()
 reserve1()
 swap(address _tokenIn, uint256 _amountIn)
 token0()
 token1()
 totalSupply()
+transferOwnership(address newOwner)
+unpause()
 ```
 
 

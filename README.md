@@ -143,7 +143,7 @@ export T2=[CONTRACT-ADDRESS-OF-TOKEN-2]
 
 # CREATE TOKEN PAIR
 ```
-cast send $ADD "initialize(address,address)" $T1 $2 --rpc-url $RPC --private-key $PRIV
+cast send $ADD "createPair(address,address)" $T1 $T2 --rpc-url $RPC --private-key $PRIV
 ```
 
 # APPROVE THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF

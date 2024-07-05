@@ -1,6 +1,9 @@
 # Automated Market Maker (AMM) Smart Contract
 
-This contract implements an Automated Market Maker (AMM) for two ERC20 tokens. Here's a brief explanation of what it does and its security features:
+This contract implements an Automated Market Maker (AMM) for two ERC20 tokens. Below is a brief explanation of what this contract does and its security features.
+
+A sample deployment of this smart contract and proof of its verification can be found [on the Sepolia testnet](https://sepolia.etherscan.io/address/0xE506519eCd0288628c71Ba754f5A20d0Fa8FA7f6).
+
 
 ## Functionality:
 

@@ -17,11 +17,13 @@ contract AMMTest is Test {
     AMM public amm;
     MockERC20 public token0;
     MockERC20 public token1;
+    uint256 public pairId;
 
     function setUp() public {
         token0 = new MockERC20("Token0", "TK0");
         token1 = new MockERC20("Token1", "TK1");
-        amm = new AMM(address(token0), address(token1));
+        amm = new AMM();
+        pairId = amm.createPair(address(token0), address(token1));
     }
 
     function addInitialLiquidity() internal {
@@ -34,7 +36,7 @@ contract AMMTest is Test {
         token0.approve(address(amm), amount0);
         token1.approve(address(amm), amount1);
 
-        amm.addLiquidity(amount0, amount1);
+        amm.addLiquidity(pairId, amount0, amount1);
     }
 
     function testAddLiquidity() public {
@@ -47,19 +49,19 @@ contract AMMTest is Test {
         token0.approve(address(amm), amount0);
         token1.approve(address(amm), amount1);
 
-        uint256 shares = amm.addLiquidity(amount0, amount1);
+        uint256 shares = amm.addLiquidity(pairId, amount0, amount1);
         assertGt(shares, 0, "Shares should be greater than 0");
     }
 
     function testRemoveLiquidity() public {
         addInitialLiquidity();
     
-        uint256 shares = amm.balanceOf(address(this));
+        uint256 shares = amm.getBalance(pairId, address(this));
         require(shares > 0, "No shares minted");
 
-        amm.removeLiquidity(shares);
+        amm.removeLiquidity(pairId, shares);
 
-        assertEq(amm.balanceOf(address(this)), 0, "All shares should be burned");
+        assertEq(amm.getBalance(pairId, address(this)), 0, "All shares should be burned");
         assertGt(token0.balanceOf(address(this)), 0, "Should have received token0");
         assertGt(token1.balanceOf(address(this)), 0, "Should have received token1");
     }
@@ -72,23 +74,23 @@ contract AMMTest is Test {
         token0.approve(address(amm), swapAmount);
 
         uint256 token1BalanceBefore = token1.balanceOf(address(this));
-        amm.swap(address(token0), swapAmount);
+        amm.swap(pairId, address(token0), swapAmount);
         uint256 token1BalanceAfter = token1.balanceOf(address(this));
 
         assertGt(token1BalanceAfter, token1BalanceBefore, "Should have received token1");
     }
 
     function testFailAddLiquidityZeroAmount() public {
-        amm.addLiquidity(0, 0);
+        amm.addLiquidity(pairId, 0, 0);
     }
 
     function testFailRemoveLiquidityInsufficientShares() public {
-        amm.removeLiquidity(1000);
+        amm.removeLiquidity(pairId, 1000);
     }
 
     function testFailSwapInvalidToken() public {
         MockERC20 invalidToken = new MockERC20("InvalidToken", "ITK");
         invalidToken.approve(address(amm), 100);
-        amm.swap(address(invalidToken), 100);
+        amm.swap(pairId, address(invalidToken), 100);
     }
 }

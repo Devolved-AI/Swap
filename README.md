@@ -239,6 +239,25 @@ cast call $ADD "getBalance(uint256,address)(uint256)" [PAIR-ID] [PAIR-CREATOR-WA
 ```
 The output would be the amount in wei that the liquidity pair creator can withdraw from the pool.
 
+**pause()** the swap:
+This function **can only be called by the owner of the contract** (the entity who deployed the contract on the blockchain).
+
+Calling this function will pause the contract so no tansactions can be done on the contract.
+```
+cast send $ADD "pause()" --rpc-url $RPC --private-key $PRIV
+```
+
+Check to see if the swap is **paused()**:
+Calling this function will let you know if the swap is paused (true) or not (false).
+
+The output will be a ***boolean*** value.
+```
+cast call $ADD "paused()(bool)" --rpc-url $RPC
+```
+
+
+
+
 
 # TODOS:
 

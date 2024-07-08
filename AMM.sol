@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract AMM is ReentrancyGuard, Pausable {
+    using SafeERC20 for IERC20;
+
     struct LiquidityPair {
         IERC20 token0;
         IERC20 token1;
@@ -77,8 +79,8 @@ contract AMM is ReentrancyGuard, Pausable {
         uint256 balance0Before = pair.token0.balanceOf(address(this));
         uint256 balance1Before = pair.token1.balanceOf(address(this));
 
-        pair.token0.transferFrom(msg.sender, address(this), _amount0);
-        pair.token1.transferFrom(msg.sender, address(this), _amount1);
+        pair.token0.safeTransferFrom(msg.sender, address(this), _amount0);
+        pair.token1.safeTransferFrom(msg.sender, address(this), _amount1);
 
         uint256 balance0After = pair.token0.balanceOf(address(this));
         uint256 balance1After = pair.token1.balanceOf(address(this));
@@ -129,8 +131,8 @@ contract AMM is ReentrancyGuard, Pausable {
         _burn(_pairId, msg.sender, _shares);
         _update(_pairId, bal0 - amount0, bal1 - amount1);
 
-        pair.token0.transfer(msg.sender, amount0);
-        pair.token1.transfer(msg.sender, amount1);
+        pair.token0.safeTransfer(msg.sender, amount0);
+        pair.token1.safeTransfer(msg.sender, amount1);
 
         emit LiquidityRemoved(_pairId, msg.sender, amount0, amount1, _shares);
     }
@@ -160,8 +162,8 @@ contract AMM is ReentrancyGuard, Pausable {
 
         require(amountOut > 0 && amountOut <= reserveOut, "Insufficient output amount");
 
-        tokenIn.transferFrom(msg.sender, address(this), _amountIn);
-        tokenOut.transfer(msg.sender, amountOut);
+        tokenIn.safeTransferFrom(msg.sender, address(this), _amountIn);
+        tokenOut.safeTransfer(msg.sender, amountOut);
 
         _update(
             _pairId,

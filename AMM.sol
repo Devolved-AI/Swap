@@ -4,8 +4,9 @@ pragma solidity ^0.8.22;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract AMM is ReentrancyGuard, Pausable {
+contract AMM is ReentrancyGuard, Pausable, Ownable { 
     using SafeERC20 for IERC20;
 
     struct LiquidityPair {
@@ -42,7 +43,9 @@ contract AMM is ReentrancyGuard, Pausable {
         unlocked = 1;
     }
 
-    function createPair(address _token0, address _token1) external returns (uint256 pairId) {
+    constructor() Ownable(msg.sender) {}
+
+    function createPair(address _token0, address _token1) external onlyOwner returns (uint256 pairId) { // Use onlyOwner modifier
         require(_token0 != address(0) && _token1 != address(0), "Invalid token address");
         require(_token0 != _token1, "Tokens must be different");
         require(getPairId[_token0][_token1] == 0, "Pair already exists");
@@ -214,11 +217,11 @@ contract AMM is ReentrancyGuard, Pausable {
         return x <= y ? x : y;
     }
 
-    function pause() external {
+    function pause() external onlyOwner {
         _pause();
     }
 
-    function unpause() external {
+    function unpause() external onlyOwner {
         _unpause();
     }
 }

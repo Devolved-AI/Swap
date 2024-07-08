@@ -185,12 +185,12 @@ cast send $ADD "addLiquidity(uint256,uint256,uint256)" 20 1000000000000000000 50
 
 # PERFORM THE swap() FROM TOKEN 0 TO TOKEN 1
 ```
-cast send $ADD "swap(address,uint256)" $T0 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+cast send $ADD "swap(uint256,address,uint256)" [PAIR-ID] --rpc-url $RPC $T0 [AMOUNT-IN-WEI] --private-key $PRIV
 ```
 
 # PERFORM THE swap() FROM TOKEN 1 TO TOKEN 0
 ```
-cast send $ADD "swap(address,uint256)" $T1 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+cast send $ADD "swap(uint256,address,uint256)" [PAIR-ID] --rpc-url $RPC $T1 [AMOUNT-IN-WEI] --private-key $PRIV
 ```
 
 # removeLiquidity() FROM THE POOL:

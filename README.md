@@ -195,7 +195,11 @@ cast send $ADD "swap(uint256,address,uint256)" [PAIR-ID] --rpc-url $RPC $T1 [AMO
 
 # removeLiquidity() FROM THE POOL:
 ```
-CURRENTLY TESTING. WILL UPDATE SOON.
+/// RETRIEVE THE BALANCE IN THE POOL
+cast call $ADD "getBalance(uint256,address)(uint256)" [PAIR-ID] [PAIR-CREATOR-WALLET-ADDRESS] --rpc-url $RPC
+
+/// REMOVE ALL OR PART OF THE LIQUIDITY IN THE POOL
+cast send $ADD "removeLiquidity(uint256,uint256)" [PAIR-ID] [AMOUNT] --rpc-url $RPC --private-key $PRIV
 ```
 
 # READ FUNCTIONS (These DO NOT modify the state of the blockchain so no gas will be charged to call these functions)

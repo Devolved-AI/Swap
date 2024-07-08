@@ -168,19 +168,19 @@ cast send $T2 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --p
 
 **PLEASE NOTE:** The approval amounts must be specified in wei since Foundry cast does not support decimals or floating point numbers. To convert your decimals and numbers to Wei format, [Go Here](https://eth-converter.com)
 
-Also, if you are creating a pair that has a token with 6 decimal places (ex; USDC) and a token that has 18 decimal places, you must use the appropriate zeros in the conversion.
+Also, if you are creating a pair that has a token with 6 decimal places (ex: USDC) and a token that has 18 decimal places, you must use the appropriate zeros in the conversion.
 
 EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 20000000000000000000 (20 with 18 zeros). This would create a pool of 20 USDC and 20 AGC making the ratio 1 USDC = 1 AGC.
 
 # ADD LIQUIDITY
 ```
-cast send $ADD "addLiquidity(uint256,uint256)" [TOKEN-1-AMOUNT-IN-WEI] [TOKEN-2-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+cast send $ADD "addLiquidity(uint256,uint256,uint256)" [PAIR-ID-FROM-ABOVE-STEP] [TOKEN-1-AMOUNT-IN-WEI] [TOKEN-2-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
-The above command will initialize the liquidity pair with Token 1 = Token 2. For example, if you wanted to make 1 WETH equal to 5000 AGC, you would run the command like this:
+The above command will initialize the liquidity pair with Token 1 = Token 2. For example, if you wanted to make 1 WETH equal to 5000 AGC with a Pair ID of 20, you would run the command like this:
 
 ```
-cast send $ADD "addLiquidity(uint256,uint256)" 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
+cast send $ADD "addLiquidity(uint256,uint256,uint256)" 20 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
 ```
 
 # PERFORM THE SWAP FROM TOKEN 1 TO TOKEN 2

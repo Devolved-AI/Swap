@@ -130,7 +130,6 @@ swap(uint256 _pairId, address _tokenIn, uint256 _amountIn)
 unpause()
 ```
 
-
 # CREATE ENVIRONMENTAL VARIABLES
 Run these commands to set environmental variables **during this session only.**
 ```
@@ -146,6 +145,15 @@ export T2=[CONTRACT-ADDRESS-OF-TOKEN-2]
 cast send $ADD "createPair(address,address)" $T1 $T2 --rpc-url $RPC --private-key $PRIV
 ```
 
+# GET THE PAIR ID FOR YOUR CREATED PAIR
+
+The PairID plays an important role because it issues an ID number that is associated with your liquidity pair and is stored in a mapping array on the blockchain.
+
+Run the code below to get the PairID. **PLEASE NOTATE THIS ID NUMBER** because you will need it to **add liquidity to the pool.**
+```
+cast call $ADD "getPairId(address,address)(uint256)" $T1 $T2 --rpc-url $RPC
+```
+
 # APPROVE THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
 
 For Token 1
@@ -159,6 +167,10 @@ cast send $T2 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --p
 ```
 
 **PLEASE NOTE:** The approval amounts must be specified in wei since Foundry cast does not support decimals or floating point numbers. To convert your decimals and numbers to Wei format, [Go Here](https://eth-converter.com)
+
+Also, if you are creating a pair that has a token with 6 decimal places (ex; USDC) and a token that has 18 decimal places, you must use the appropriate zeros in the conversion.
+
+EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 20000000000000000000 (20 with 18 zeros). This would create a pool of 20 USDC and 20 AGC making the ratio 1 USDC = 1 AGC.
 
 # ADD LIQUIDITY
 ```

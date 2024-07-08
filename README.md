@@ -257,6 +257,16 @@ The output will be a ***boolean*** value.
 cast call $ADD "paused()(bool)" --rpc-url $RPC
 ```
 
+**unpause()** the swap:
+
+This function will unpause the swap so normal transactions can resume.
+
+This function **can only be called by the owner (deployer) of the contract**
+```
+cast send $ADD "unpause()" --rpc-url $RPC --private-key $PRIV
+```
+
+
 
 
 

@@ -136,34 +136,34 @@ Run these commands to set environmental variables **during this session only.**
 export PRIV=[YOUR-PRIVATE-KEY]
 export RPC=[YOUR-RPC-URL]
 export ADD=[YOUR-AMM-CONTRACT-ADDRESS]
+export T0=[CONTRACT-ADDRESS-OF-TOKEN-0]
 export T1=[CONTRACT-ADDRESS-OF-TOKEN-1]
-export T2=[CONTRACT-ADDRESS-OF-TOKEN-2]
 ```
 
-# CREATE TOKEN PAIR
+# createPair() BETWEEN 2 TOKENS TO BEGIN THE LIQUIDITY POOL:
 ```
-cast send $ADD "createPair(address,address)" $T1 $T2 --rpc-url $RPC --private-key $PRIV
+cast send $ADD "createPair(address,address)" $T0 $T1 --rpc-url $RPC --private-key $PRIV
 ```
 
-# GET THE PAIR ID FOR YOUR CREATED PAIR
+# GET THE pairId() FOR YOUR CREATED PAIR
 
 The PairID plays an important role because it issues an ID number that is associated with your liquidity pair and is stored in a mapping array on the blockchain.
 
 Run the code below to get the PairID. **PLEASE NOTATE THIS ID NUMBER** because you will need it to **add liquidity to the pool.**
 ```
-cast call $ADD "getPairId(address,address)(uint256)" $T1 $T2 --rpc-url $RPC
+cast call $ADD "getPairId(address,address)(uint256)" $T0 $T1 --rpc-url $RPC
 ```
 
-# APPROVE THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
+# approve() THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
+
+For Token 0
+```
+cast send $T0 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
 
 For Token 1
 ```
 cast send $T1 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
-```
-
-For Token 2
-```
-cast send $T2 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
 **PLEASE NOTE:** The approval amounts must be specified in wei since Foundry cast does not support decimals or floating point numbers. To convert your decimals and numbers to Wei format, [Go Here](https://eth-converter.com)
@@ -172,53 +172,61 @@ Also, if you are creating a pair that has a token with 6 decimal places (ex: USD
 
 EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 20000000000000000000 (20 with 18 zeros). This would create a pool of 20 USDC and 20 AGC making the ratio 1 USDC = 1 AGC.
 
-# ADD LIQUIDITY
+# addLiquidity() TO THE LIQUIDITY PAIR:
 ```
-cast send $ADD "addLiquidity(uint256,uint256,uint256)" [PAIR-ID-FROM-ABOVE-STEP] [TOKEN-1-AMOUNT-IN-WEI] [TOKEN-2-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+cast send $ADD "addLiquidity(uint256,uint256,uint256)" [PAIR-ID-FROM-ABOVE-STEP] [TOKEN-0-AMOUNT-IN-WEI] [TOKEN-1-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
-The above command will initialize the liquidity pair with Token 1 = Token 2. For example, if you wanted to make 1 WETH equal to 5000 AGC with a Pair ID of 20, you would run the command like this:
+The above command will add funds to the liquidity pair with Token 0 = Token 1. For example, if you wanted to make 1 WETH equal to 5000 AGC with a Pair ID of 20, you would run the command like this:
 
 ```
 cast send $ADD "addLiquidity(uint256,uint256,uint256)" 20 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
 ```
 
-# PERFORM THE SWAP FROM TOKEN 1 TO TOKEN 2
+# PERFORM THE swap() FROM TOKEN 0 TO TOKEN 1
+```
+cast send $ADD "swap(address,uint256)" $T0 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+```
+
+# PERFORM THE swap() FROM TOKEN 1 TO TOKEN 0
 ```
 cast send $ADD "swap(address,uint256)" $T1 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
-# PERFORM THE SWAP FROM TOKEN 2 TO TOKEN 1
-```
-cast send $ADD "swap(address,uint256)" $T2 [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
-```
-
-# REMOVE LIQUIDITY
+# removeLiquidity() FROM THE POOL:
 ```
 CURRENTLY TESTING. WILL UPDATE SOON.
 ```
 
 # READ FUNCTIONS (These DO NOT modify the state of the blockchain so no gas will be charged to call these functions)
 
-Check to see if liquidity pair is intialized:
+Get information on the **liquidityPairs()**.
 ```
-cast call $ADD "initialized()(uint256)" --rpc-url $RPC
-```
-The output of the above will be a **boolean** value. 0 = FALSE (no liquidity pair was initialized) or 1 = TRUE (liquidity pair was initalized)
-
-Get total supply of pool:
-```
-cast call $ADD "totalSupply()(uint256)" --rpc-url $RPC
+cast call $ADD "liquidityPairs(uint256)(address,address,uint256,uint256,uint256)" [PAIR-ID] --rpc-url $RPC
 ```
 
-Get Token 1 contract address:
+This will output the following:
 ```
-cast call $T1 "token0()(address)" --rpc-url $RPC
+Token0 Contract Address
+Token0 Reserve Amount (in wei)
+Token1 Contract Address 
+Token1 Reserve Amount (in wei)
+Total Amount in Pool (in ETH)
 ```
 
-Get Token 2 contract address:
+Get the **pairID()** for a liquidity pair:
 ```
-cast call $T2 "token1()(address)" --rpc-url $RPC
+cast call $ADD "getPairId(address,address)(uint256)" $T1 $T2 --rpc-url $RPC
+```
+
+Get the **pairCount()** (total number of liquidity pairs) in the swap altogether:
+```
+cast call $ADD "pairCount()(uint256)" --rpc-url $RPC
+```
+
+Get The Pair information:
+```
+This function is better sutied with the **liquidityPairs()** function above. Better to use that one since it outputs more relevant information.
 ```
 
 Get Token 1 pool reserves:

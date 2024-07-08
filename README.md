@@ -226,17 +226,15 @@ cast call $ADD "pairCount()(uint256)" --rpc-url $RPC
 
 Get The Pair information:
 
-**This function is better sutied with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
+**This function is better suited with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
 
-Get Token 1 pool reserves:
-```
-cast call $ADD "reserve0()(uint256)" --rpc-url $RPC
-```
 
-Get Token 2 pool reserves:
+**getBalance()** of the pool:
 ```
-cast call $ADD "reserve1()(uint256)" --rpc-url $RPC
+cast call $ADD "getBalance(uint256,address)(uint256)" [PAIR-ID] [PAIR-CREATOR-WALLET-ADDRESS] --rpc-url $RPC
 ```
+The output would be the amount in wei that the liquidity pair creator can withdraw from the pool.
+
 
 # TODOS:
 

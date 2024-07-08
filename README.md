@@ -226,7 +226,7 @@ cast call $ADD "pairCount()(uint256)" --rpc-url $RPC
 
 Get The Pair information:
 
-This function is better sutied with the **liquidityPairs()** function above. Better to use that one since it outputs more relevant information.
+**This function is better sutied with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
 
 Get Token 1 pool reserves:
 ```

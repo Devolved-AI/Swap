@@ -1,0 +1,83 @@
+import React, { useState, useEffect } from 'react';
+import web3 from './web3';
+import AddLiquidity from './components/AddLiquidity';
+import CreatePair from './components/CreatePair';
+import Swap from './components/Swap';
+import RemoveLiquidity from './components/RemoveLiquidity';
+import Approve from './components/Approve';
+import contractABI from './AmmABI.json'; // Import your contract ABI here
+
+const App = () => {
+  const [account, setAccount] = useState('');
+  const [contract, setContract] = useState(null);
+
+  useEffect(() => {
+    if (web3 && account) {
+      const contractAddress = '0x2BFA6a1B4074391E5788f1174CC1fa396dB0aaB2'; // Replace with your contract address
+      const instance = new web3.eth.Contract(contractABI, contractAddress);
+      setContract(instance);
+    }
+  }, [account]);
+
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setAccount(accounts[0]);
+      } catch (error) {
+        console.error("User denied account access", error);
+      }
+    } else {
+      alert('Please install MetaMask!');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Welcome To ArgoSwap</h1>
+      {account ? (
+        <div>
+          <p><b>Wallet Connected At:</b> {account}</p>
+        </div>
+      ) : (
+        <button onClick={connectWallet}>Connect Wallet</button>
+      )}
+      
+      <div>
+        <h2><b>Create Pair</b></h2>
+        <CreatePair />
+      </div>
+
+      <br />
+
+      <div>
+        <h2><b>Approve</b></h2>
+        <Approve account={account} contract={contract} />
+      </div>
+
+      <br />
+
+      <div>
+        <h2><b>Add Liquidity</b></h2>
+        <AddLiquidity />
+      </div>
+
+      <br />
+
+      <div>
+        <h2><b>Swap</b></h2>
+        <Swap />
+      </div>
+
+      <br />
+
+      <div>
+        <h2><b>Remove Liquidity</b></h2>
+        <RemoveLiquidity />
+      </div>
+    </div>
+  );
+};
+
+export default App;
+

@@ -1,3 +1,17 @@
+# Swap Frontend
+
+This is a basic, skeletal frontend for the swap that was created using React.
+
+Below are a list of the functions that are complete and working on the frontend and those that are still processing:
+
+- ✓ Connect Wallet - **COMPLETE**
+- ✓ Change Wallet - **COMPLETE**
+- ✓ Create Liquidity Pair - **COMPLETE**
+- ✓ Approve Tokens To Spend - **COMPLETE**
+- ✗ Add Liquidity - **PROCESSING**
+- ✗ Swap - **PROCESSING**
+- ✗ Remove Liquidity - **PROCESSING**
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

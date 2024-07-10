@@ -7,9 +7,11 @@ A sample deployment of this smart contract and proof of its verification can be 
 
 ## Functionality:
 
-1. Allows users to swap between two tokens.
-2. Enables users to add liquidity by depositing both tokens.
-3. Allows liquidity providers to remove their liquidity and receive tokens back.
+1. Users can wrap native tokens to wrapped tokens at a 1:1 ratio
+2. Users can unwrap wrapped tokens back to native tokens at a 1:1 ratio
+3. Allows users to swap between two tokens.
+4. Enables users to add liquidity by depositing both tokens.
+5. Allows liquidity providers to remove their liquidity and receive tokens back.
 
 ## Security Features:
 
@@ -96,7 +98,9 @@ forge test
 If all test pass, run the deploy script **from the AMM root directory** to deploy to the blockchain of your choosing. Please make sure you have an API key for the blockchain's explorer of your choice so it passes the verification part.
 
 ```
-forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv
+WETH_ADDRESS=[WETH-CONTRACT-ADDRESS] forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv
+
+NOTE: Pass the WETH contract address if you are using WETH as your wrapped token. If you are passing a different token contract address (WMATIC, etc), pass that value instead.
 ```
 
 Your contract should be successfully deployed and verified on the blockchain. **Make note of the contract addresses.**
@@ -121,13 +125,19 @@ getBalance(uint256 _pairId, address _account)
 getPairId(address , address )
 getPairInfo(uint256 _pairId)
 liquidityPairs(uint256 )
+owner()
 pairCount()
 pairInfo(uint256 )
 pause()
 paused()
 removeLiquidity(uint256 _pairId, uint256 _shares)
+renounceOwnership()
 swap(uint256 _pairId, address _tokenIn, uint256 _amountIn)
+transferOwnership(address newOwner)
 unpause()
+unwrap(uint256 _amount)
+weth()
+wrap()
 ```
 
 # CREATE ENVIRONMENTAL VARIABLES
@@ -138,6 +148,13 @@ export RPC=[YOUR-RPC-URL]
 export ADD=[YOUR-AMM-CONTRACT-ADDRESS]
 export T0=[CONTRACT-ADDRESS-OF-TOKEN-0]
 export T1=[CONTRACT-ADDRESS-OF-TOKEN-1]
+EXPORT WETH=[WRAPPED-ETHER-CONTRACT-ADDRESS]
+  - If you are using a different wrapped token (ex: WMATIC), use that key and pass the value instead.
+```
+
+# wrap() A NATIVE TOKEN TO CONVERT IT TO A WRAPPED TOKEN AT A 1:1 RATIO
+```
+cast send $ADD "wrap()" --value [VALUE-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
 # createPair() BETWEEN 2 TOKENS TO BEGIN THE LIQUIDITY POOL:
@@ -171,6 +188,15 @@ cast send $T1 "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --p
 Also, if you are creating a pair that has a token with 6 decimal places (ex: USDC) and a token that has 18 decimal places, you must use the appropriate zeros in the conversion.
 
 EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 20000000000000000000 (20 with 18 zeros). This would create a pool of 20 USDC and 20 AGC making the ratio 1 USDC = 1 AGC.
+
+# unwrap() A WRAPPED TOKEN TO CONVERT IT BACK TO A NATIVE TOKEN AT A 1:1 RATIO
+```
+// Approve the contract to spend your wrapped tokens
+cast send $ETH "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+
+// Convert the Wrapped Tokens back to the Native Tokens at a 1:1 ratio
+cast send $ADD "unwrap(uint256)" [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV 
+```
 
 # addLiquidity() TO THE LIQUIDITY PAIR:
 ```
@@ -228,10 +254,19 @@ Get the **pairCount()** (total number of liquidity pairs) in the swap altogether
 cast call $ADD "pairCount()(uint256)" --rpc-url $RPC
 ```
 
-Get The Pair information:
+Get The **pairInfo() (also as getPairInfo()):**
 
 **This function is better suited with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
 
+Get the **weth()** contract address:
+```
+cast call $ADD "weth()(address)" --rpc-url $RPC
+```
+
+Get the **owner()** of the contract
+```
+cast call $ADD "owner()(address)" --rpc-url $RPC
+```
 
 **getBalance()** of the pool:
 ```
@@ -266,6 +301,20 @@ This function **can only be called by the owner (deployer) of the contract**
 cast send $ADD "unpause()" --rpc-url $RPC --private-key $PRIV
 ```
 
+**transferOwnership()** of the swap to a new owner:
+```
+cast send $ADD "transferOwnership(address)" [NEW-OWNER-WALLET-ADDRESS] --rpc-url $RPC --private-key $PRIV
+```
+
+***renounceOwnership()** of the swap:
+
+**NOTE: THIS IS A DANGEROUS FUNCTION CALL THAT RELINQUISHES OWNERSHIP OF THE SWAP IN ITS ENTIRETY. THIS FUNCTION IS IRREVERSIBLE AND NO ONE WALLET ADDRESS CAN CALL FUNCTIONS THAT ARE
+PRIVILEGED. USE THIS FUNCTION AT YOUR OWN RISK!!**
+```
+cast send $ADD "renounceOwnership()" --rpc-url $RPC --private-key $PRIV
+```
+
+This function sets the owner of the contract to 0x0000000000000000000000000000000000000000. The pause(), unpause(), transferOwnership(), and renounceOwnership() functions will no longer be valid and usable. 
 
 
 

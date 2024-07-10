@@ -6,6 +6,15 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+interface IWETH {
+    function deposit() external payable;
+    function withdraw(uint256) external;
+    function balanceOf(address) external view returns (uint256);
+    function transfer(address, uint256) external returns (bool);
+    function transferFrom(address, address, uint256) external returns (bool);
+    function approve(address, uint256) external returns (bool);
+}
+
 contract AMM is ReentrancyGuard, Pausable, Ownable { 
     using SafeERC20 for IERC20;
 
@@ -31,10 +40,14 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
     uint256 private constant MINIMUM_LIQUIDITY = 1000;
     uint256 private unlocked = 1;
 
+    IWETH public weth;
+
     event PairCreated(address indexed token0, address indexed token1, uint256 pairId);
     event LiquidityAdded(uint256 indexed pairId, address indexed provider, uint256 amount0, uint256 amount1, uint256 shares);
     event LiquidityRemoved(uint256 indexed pairId, address indexed provider, uint256 amount0, uint256 amount1, uint256 shares);
     event Swap(uint256 indexed pairId, address indexed user, address tokenIn, uint256 amountIn, uint256 amountOut);
+    event Wrap(address indexed user, uint256 amount);
+    event Unwrap(address indexed user, uint256 amount);
 
     modifier lock() {
         require(unlocked == 1, "AMM: LOCKED");
@@ -43,9 +56,12 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
         unlocked = 1;
     }
 
-    constructor() Ownable(msg.sender) {}
+    constructor(address _weth) Ownable(msg.sender) {
+        require(_weth != address(0), "Invalid WETH address");
+        weth = IWETH(_weth);
+    }
 
-    function createPair(address _token0, address _token1) external onlyOwner returns (uint256 pairId) { // Use onlyOwner modifier
+    function createPair(address _token0, address _token1) external onlyOwner returns (uint256 pairId) {
         require(_token0 != address(0) && _token1 != address(0), "Invalid token address");
         require(_token0 != _token1, "Tokens must be different");
         require(getPairId[_token0][_token1] == 0, "Pair already exists");
@@ -177,6 +193,22 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
         emit Swap(_pairId, msg.sender, _tokenIn, _amountIn, amountOut);
     }
 
+    function wrap() external payable nonReentrant whenNotPaused {
+        require(msg.value > 0, "Must send ETH to wrap");
+        weth.deposit{value: msg.value}();
+        require(weth.transfer(msg.sender, msg.value), "WETH transfer failed");
+        emit Wrap(msg.sender, msg.value);
+    }
+
+    function unwrap(uint256 _amount) external nonReentrant whenNotPaused {
+        require(_amount > 0, "Amount must be greater than 0");
+        IERC20(address(weth)).safeTransferFrom(msg.sender, address(this), _amount);
+        weth.withdraw(_amount);
+        (bool success, ) = msg.sender.call{value: _amount}("");
+        require(success, "ETH transfer failed");
+        emit Unwrap(msg.sender, _amount);
+    }
+
     function getBalance(uint256 _pairId, address _account) public view returns (uint256) {
         require(_pairId > 0 && _pairId <= pairCount, "Invalid pair ID");
         return liquidityPairs[_pairId].balanceOf[_account];
@@ -224,4 +256,6 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
     function unpause() external onlyOwner {
         _unpause();
     }
+
+    receive() external payable {}
 }

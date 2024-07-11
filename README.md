@@ -192,7 +192,7 @@ EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 200000000000
 # unwrap() A WRAPPED TOKEN TO CONVERT IT BACK TO A NATIVE TOKEN AT A 1:1 RATIO
 ```
 // Approve the contract to spend your wrapped tokens
-cast send $ETH "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
+cast send $WETH "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 
 // Convert the Wrapped Tokens back to the Native Tokens at a 1:1 ratio
 cast send $ADD "unwrap(uint256)" [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV 

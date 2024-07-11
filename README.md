@@ -99,9 +99,9 @@ If all test pass, run the deploy script **from the AMM root directory** to deplo
 
 ```
 WETH_ADDRESS=[WETH-CONTRACT-ADDRESS] forge script script/AMM.s.sol:DeployAMM --rpc-url [YOUR-BLOCKCHAIN-RPC-URL] --broadcast --verify -vvvv
+```
 
 NOTE: Pass the WETH contract address if you are using WETH as your wrapped token. If you are passing a different token contract address (WMATIC, etc), pass that value instead.
-```
 
 Your contract should be successfully deployed and verified on the blockchain. **Make note of the contract addresses.**
 
@@ -315,6 +315,13 @@ cast send $ADD "renounceOwnership()" --rpc-url $RPC --private-key $PRIV
 ```
 
 This function sets the owner of the contract to 0x0000000000000000000000000000000000000000. The pause(), unpause(), transferOwnership(), and renounceOwnership() functions will no longer be valid and usable. 
+
+# GET THE LP_FEE_SHARE AMOUNT IN PERCENTAGE
+```
+cast call $ADD "LP_FEE_SHARE()(uint256)" --rpc-url $RPC
+```
+
+The output should be a number. This number is a percentage. For example, if the ouput number is 85, that means the liquidity pool provider will get 85% of the swap fee for a swap done against his or her liquidity pool.
 
 
 

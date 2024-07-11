@@ -316,7 +316,7 @@ cast send $ADD "renounceOwnership()" --rpc-url $RPC --private-key $PRIV
 
 This function sets the owner of the contract to 0x0000000000000000000000000000000000000000. The pause(), unpause(), transferOwnership(), and renounceOwnership() functions will no longer be valid and usable. 
 
-# GET THE LP_FEE_SHARE AMOUNT IN PERCENTAGE
+# GET THE LP_FEE_SHARE() AMOUNT IN PERCENTAGE
 ```
 cast call $ADD "LP_FEE_SHARE()(uint256)" --rpc-url $RPC
 ```

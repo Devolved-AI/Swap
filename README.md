@@ -323,6 +323,19 @@ cast call $ADD "LP_FEE_SHARE()(uint256)" --rpc-url $RPC
 
 The output should be a number. This number is a percentage. For example, if the ouput number is 85, that means the liquidity pool provider will get 85% of the swap fee for a swap done against his or her liquidity pool.
 
+# getAccumulatedFees() TO SEE HOW MUCH TOTAL THE PROTOCOL HAS EARNED FROM SWAP FEES
+```
+cast call $ADD "getAccumulatedFees()(uint256)" --rpc-url $RPC --private-key $PRIV
+```
+
+# GET THE swapFee() AMOUNT THE PROTOCOL IS CHARGING TO DO SWAPS
+```
+cast call $ADD "swapFee()(uint256)" --rpc-url $RPC
+```
+
+The number that is outputted would be represented in a percentage amount that is designated in DOLLARS and CENTS. For example, an output of 30 would be equivalent to 0.3%.
+
+That means for every $100 worth of tokens an individual swaps, they would pay $0.30 in swap fees.
 
 
 

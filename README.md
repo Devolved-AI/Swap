@@ -1,3 +1,23 @@
+# Update 7-15-2024
+
+I've performed fuzzing test analysis on the smart contract by creating Fuzz.sol and uploaded it here to Github.  
+
+The program I used is Echidna, a popular smart contract fuzzing application that uses invariants to break functions in your smart contract.
+
+The command to run Echidna is 
+```
+echidna --workers 5 ./Fuzz.sol --test-mode assertion --rpc-url https://sepolia.infura.io/v3/[YOUR-PROJECT-ID]
+```
+
+The results of the tests are below:
+
+<img width="1512" alt="Screenshot 2024-07-15 at 3 36 32 PM" src="https://github.com/user-attachments/assets/a5f7ec86-ce46-499c-9e36-596e673a5f88">
+
+
+**PLEASE MAKE SURE FUZZ.SOL IS IN THE PROJECT ROOT DIRECTORY, NOT THE /SRC OR /TEST DIRECTORY IF USING FOUNDRY.**
+
+
+
 # Automated Market Maker (AMM) Smart Contract
 
 This contract implements an Automated Market Maker (AMM) for two ERC20 tokens. Below is a brief explanation of what this contract does and its security features.

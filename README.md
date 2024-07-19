@@ -1,3 +1,17 @@
+# Update 7-19-2024
+
+Several tests were ran and issues were resolved to satisfaction.
+
+**Mythril** analysis passed. No issues detected.
+
+<img width="673" alt="Screenshot 2024-07-19 at 3 07 19 PM" src="https://github.com/user-attachments/assets/75a74c5d-35e2-4ccb-a656-d11461867b27">
+
+**Slither** analysis passed with no medium or high severity issues.
+
+<img width="788" alt="Screenshot 2024-07-19 at 3 08 17 PM" src="https://github.com/user-attachments/assets/8b4edd56-7e47-4e94-829f-0f737d1185f7">
+
+**Aderyn** tests had low issues, nothing of major concern.
+
 # Update 7-15-2024
 
 I've performed fuzzing test analysis on the smart contract by creating Fuzz.sol and uploaded it here to Github.  

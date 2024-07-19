@@ -10,7 +10,7 @@ Several tests were ran and issues were resolved to satisfaction.
 
 <img width="788" alt="Screenshot 2024-07-19 at 3 08 17 PM" src="https://github.com/user-attachments/assets/8b4edd56-7e47-4e94-829f-0f737d1185f7">
 
-**Aderyn** tests had low issues, nothing of major concern.
+**Aderyn** tests had low issues, nothing of major concern. Check out the ***aderyn-report-7-19-2024.md*** file above for more information.
 
 # Update 7-15-2024
 

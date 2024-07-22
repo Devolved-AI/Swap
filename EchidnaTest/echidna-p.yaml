@@ -1,0 +1,8 @@
+testMode: property
+testLimit: 1000000
+corpusDir: corpus-property
+seqLen: 100
+contractAddr: "0x00a329c0648769A73afAc7F9381E08FB43dBEA72"
+deployer: "0xd7Bc9888A66Bf8683521d65A7938A839406C2e0E"
+sender: ["0x00000000000000000000000000000000deadbeef"]
+coverageEnabled: true

@@ -64,7 +64,7 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
 
     uint256 public swapFee = 30; // 0.3% default fee (30 / 10000)
     uint256 public constant LP_FEE_SHARE = 85; // 85% of the fee goes to LP
-    uint256 public accumulatedFees;
+    uint256 private accumulatedFees;
 
     IWETH immutable public weth;
 
@@ -313,6 +313,7 @@ contract AMM is ReentrancyGuard, Pausable, Ownable {
             "Invalid token"
         );
         require(_amountIn > 0, "Amount in = 0");
+        require(_minAmountOut <= 1000, "Slippage tolerance too high"); // Max 10% slippage
 
         bool isToken0 = _tokenIn == address(pair.token0);
         uint256 reserveIn = isToken0 ? pair.reserve0 : pair.reserve1;

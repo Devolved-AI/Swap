@@ -200,17 +200,17 @@ EXPORT WETH=[WRAPPED-ETHER-CONTRACT-ADDRESS]
   - If you are using a different wrapped token (ex: WMATIC), use that key and pass the value instead.
 ```
 
-# wrap() A NATIVE TOKEN TO CONVERT IT TO A WRAPPED TOKEN AT A 1:1 RATIO
+## wrap() A NATIVE TOKEN TO CONVERT IT TO A WRAPPED TOKEN AT A 1:1 RATIO
 ```
 cast send $ADD "wrap()" --value [VALUE-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
 
-# createPair() BETWEEN 2 TOKENS TO BEGIN THE LIQUIDITY POOL:
+## createPair() BETWEEN 2 TOKENS TO BEGIN THE LIQUIDITY POOL:
 ```
 cast send $ADD "createPair(address,address)" $T0 $T1 --rpc-url $RPC --private-key $PRIV
 ```
 
-# GET THE pairId() FOR YOUR CREATED PAIR
+## GET THE pairId() FOR YOUR CREATED PAIR
 
 The PairID plays an important role because it issues an ID number that is associated with your liquidity pair and is stored in a mapping array on the blockchain.
 
@@ -219,7 +219,7 @@ Run the code below to get the PairID. **PLEASE NOTATE THIS ID NUMBER** because y
 cast call $ADD "getPairId(address,address)(uint256)" $T0 $T1 --rpc-url $RPC
 ```
 
-# approve() THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
+## approve() THE AMM SWAP CONTRACT TO SPEND TOKENS ON YOUR BEHALF
 
 For Token 0
 ```
@@ -237,7 +237,7 @@ Also, if you are creating a pair that has a token with 6 decimal places (ex: USD
 
 EX: 20 USDC would be 20000000 (20 with 6 zeros) and 20 AGC would be 20000000000000000000 (20 with 18 zeros). This would create a pool of 20 USDC and 20 AGC making the ratio 1 USDC = 1 AGC.
 
-# unwrap() A WRAPPED TOKEN TO CONVERT IT BACK TO A NATIVE TOKEN AT A 1:1 RATIO
+## unwrap() A WRAPPED TOKEN TO CONVERT IT BACK TO A NATIVE TOKEN AT A 1:1 RATIO
 ```
 // Approve the contract to spend your wrapped tokens
 cast send $WETH "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
@@ -246,7 +246,7 @@ cast send $WETH "approve(address,uint256)" $ADD [AMOUNT-IN-WEI] --rpc-url $RPC -
 cast send $ADD "unwrap(uint256)" [AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV 
 ```
 
-# addLiquidity() TO THE LIQUIDITY PAIR:
+## addLiquidity() TO THE LIQUIDITY PAIR:
 ```
 cast send $ADD "addLiquidity(uint256,uint256,uint256)" [PAIR-ID-FROM-ABOVE-STEP] [TOKEN-0-AMOUNT-IN-WEI] [TOKEN-1-AMOUNT-IN-WEI] --rpc-url $RPC --private-key $PRIV
 ```
@@ -257,17 +257,43 @@ The above command will add funds to the liquidity pair with Token 0 = Token 1. F
 cast send $ADD "addLiquidity(uint256,uint256,uint256)" 20 1000000000000000000 5000000000000000000000 --rpc-url $RPC --private-key $PRIV
 ```
 
-# PERFORM THE swap() FROM TOKEN 0 TO TOKEN 1
+# THE SWAP FUNCTION
+
+The swap function takes in 4 arguments:
+- The Pair ID
+- The Token Contract Address
+- The Amount (in wei)
+- The Slippage Tolerance (**NEW as of 7-25-2024**)
+
+Users can now set their slippage tolerance to any number relative to **basis points**. However, the maximum is 1000 basis point, or 10% slippage.
+
+A slippage tolerance of 0 will do the following:
+- No slippage protection: The swap will execute regardless of how unfavorable the exchange rate becomes. This means you're accepting any output amount, no matter how small.
+- Increased vulnerability to front-running: Malicious actors could potentially manipulate the price just before your transaction is processed, resulting in you receiving a much smaller amount of tokens than expected.
+- Higher risk of significant losses: In volatile markets or low liquidity situations, you might receive far fewer tokens than anticipated.
+- Always successful swaps: Your swap transactions will almost always succeed (barring other issues), as there's no minimum threshold for the output amount.
+- Potential for zero output: In extreme cases, it's theoretically possible to receive 0 tokens in return, though this is unlikely in most practical scenarios.
+
+A slippage tolerance of 1000 will do the following:
+- The swap function will only execute successfully if the calculated amountOut is greater than or equal to 1000. This acts as a slippage protection mechanism.
+- If the calculated amountOut is less than 1000, the transaction will revert with the error message "Insufficient output amount".
+- Setting a high _minAmountOut value like 1000 could potentially cause many swap attempts to fail, especially if the liquidity in the pool is low, the input amount is small, or the price difference between the two tokens is large
+- It effectively sets a minimum price for the swap. For example, if you're swapping token A for token B, setting _minAmountOut to 1000 means you're saying "I want at least 1000 of token B for my token A, otherwise don't do the swap".
+- This high value could protect you from large price movements or slippage, but it also increases the chance that your swap will not execute at all.
+
+**TO BE SAFE AND HAVE SUCCESSFUL SWAPS, SET SLIPPAGE FROM 25 (0.25%) - 100 (1%)**
+
+## PERFORM THE swap() FROM TOKEN 0 TO TOKEN 1
 ```
-cast send $ADD "swap(uint256,address,uint256)" [PAIR-ID] --rpc-url $RPC $T0 [AMOUNT-IN-WEI] --private-key $PRIV
+cast send $ADD "swap(uint256,address,uint256,uint256)" [PAIR ID] $T0 [AMOUNT-IN-WEI] [SLIPPAGE TOLERANCE] --rpc-url $RPC --private-key $PRIV
 ```
 
-# PERFORM THE swap() FROM TOKEN 1 TO TOKEN 0
+## PERFORM THE swap() FROM TOKEN 1 TO TOKEN 0
 ```
-cast send $ADD "swap(uint256,address,uint256)" [PAIR-ID] --rpc-url $RPC $T1 [AMOUNT-IN-WEI] --private-key $PRIV
+cast send $ADD "swap(uint256,address,uint256,uint256)" [PAIR ID] $T1 [AMOUNT-IN-WEI] [SLIPPAGE TOLERANCE] --rpc-url $RPC --private-key $PRIV
 ```
 
-# removeLiquidity() FROM THE POOL:
+## removeLiquidity() FROM THE POOL:
 ```
 /// RETRIEVE THE BALANCE IN THE POOL
 cast call $ADD "getBalance(uint256,address)(uint256)" [PAIR-ID] [PAIR-CREATOR-WALLET-ADDRESS] --rpc-url $RPC
@@ -278,7 +304,7 @@ cast send $ADD "removeLiquidity(uint256,uint256)" [PAIR-ID] [AMOUNT] --rpc-url $
 
 # READ FUNCTIONS (These DO NOT modify the state of the blockchain so no gas will be charged to call these functions)
 
-Get information on the **liquidityPairs()**.
+## Get information on the **liquidityPairs()**.
 ```
 cast call $ADD "liquidityPairs(uint256)(address,address,uint256,uint256,uint256)" [PAIR-ID] --rpc-url $RPC
 ```
@@ -292,42 +318,42 @@ Token1 Reserve Amount (in wei)
 Total Amount in Pool (in wei)
 ```
 
-Get the **pairID()** for a liquidity pair:
+## Get the **pairID()** for a liquidity pair:
 ```
 cast call $ADD "getPairId(address,address)(uint256)" $T1 $T2 --rpc-url $RPC
 ```
 
-Get the **pairCount()** (total number of liquidity pairs) in the swap altogether:
+## Get the **pairCount()** (total number of liquidity pairs) in the swap altogether:
 ```
 cast call $ADD "pairCount()(uint256)" --rpc-url $RPC
 ```
 
-Get The **pairInfo() (also as getPairInfo()):**
+## Get The **pairInfo() (also as getPairInfo()):**
 
 **This function is better suited with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
 
-Get the **weth()** contract address (mainnet):
+## Get the **weth()** contract address (mainnet):
 ```
 cast call $ADD "weth()(address)" --rpc-url $RPC
 ```
 
-Get the **wethAddress()** contract address (testnet):
+## Get the **wethAddress()** contract address (testnet):
 ```
 cast call $ADD "wethAddress()(address)" --rpc-url $RPC
 ```
 
-Get the **owner()** of the contract
+## Get the **owner()** of the contract
 ```
 cast call $ADD "owner()(address)" --rpc-url $RPC
 ```
 
-**getBalance()** of the pool:
+## **getBalance()** of the pool:
 ```
 cast call $ADD "getBalance(uint256,address)(uint256)" [PAIR-ID] [PAIR-CREATOR-WALLET-ADDRESS] --rpc-url $RPC
 ```
 The output would be the amount in wei that the liquidity pair creator can withdraw from the pool.
 
-**pause()** the swap:
+## **pause()** the swap:
 
 This function **can only be called by the owner of the contract** (the entity who deployed the contract on the blockchain).
 
@@ -345,7 +371,7 @@ The output will be a ***boolean*** value.
 cast call $ADD "paused()(bool)" --rpc-url $RPC
 ```
 
-**unpause()** the swap:
+## **unpause()** the swap:
 
 This function will unpause the swap so normal transactions can resume.
 
@@ -354,12 +380,12 @@ This function **can only be called by the owner (deployer) of the contract**
 cast send $ADD "unpause()" --rpc-url $RPC --private-key $PRIV
 ```
 
-**transferOwnership()** of the swap to a new owner:
+## **transferOwnership()** of the swap to a new owner:
 ```
 cast send $ADD "transferOwnership(address)" [NEW-OWNER-WALLET-ADDRESS] --rpc-url $RPC --private-key $PRIV
 ```
 
-***renounceOwnership()** of the swap:
+## ***renounceOwnership()** of the swap:
 
 **NOTE: THIS IS A DANGEROUS FUNCTION CALL THAT RELINQUISHES OWNERSHIP OF THE SWAP IN ITS ENTIRETY. THIS FUNCTION IS IRREVERSIBLE AND NO ONE WALLET ADDRESS CAN CALL FUNCTIONS THAT ARE
 PRIVILEGED. USE THIS FUNCTION AT YOUR OWN RISK!!**
@@ -369,19 +395,19 @@ cast send $ADD "renounceOwnership()" --rpc-url $RPC --private-key $PRIV
 
 This function sets the owner of the contract to 0x0000000000000000000000000000000000000000. The pause(), unpause(), transferOwnership(), and renounceOwnership() functions will no longer be valid and usable. 
 
-# GET THE LP_FEE_SHARE() AMOUNT IN PERCENTAGE
+## GET THE LP_FEE_SHARE() AMOUNT IN PERCENTAGE
 ```
 cast call $ADD "LP_FEE_SHARE()(uint256)" --rpc-url $RPC
 ```
 
 The output should be a number. This number is a percentage. For example, if the ouput number is 85, that means the liquidity pool provider will get 85% of the swap fee for a swap done against his or her liquidity pool.
 
-# getAccumulatedFees() TO SEE HOW MUCH TOTAL THE PROTOCOL HAS EARNED FROM SWAP FEES
+## getAccumulatedFees() TO SEE HOW MUCH TOTAL THE PROTOCOL HAS EARNED FROM SWAP FEES
 ```
 cast call $ADD "getAccumulatedFees()(uint256)" --rpc-url $RPC --private-key $PRIV
 ```
 
-# GET THE swapFee() AMOUNT THE PROTOCOL IS CHARGING TO DO SWAPS
+## GET THE swapFee() AMOUNT THE PROTOCOL IS CHARGING TO DO SWAPS
 ```
 cast call $ADD "swapFee()(uint256)" --rpc-url $RPC
 ```
@@ -390,7 +416,20 @@ The number that is outputted would be represented in a percentage amount that is
 
 That means for every $100 worth of tokens an individual swaps, they would pay $0.30 in swap fees.
 
+## GET THE totalSupply() OF THE POOL
+```
+cast call $ADD "getTotalSupply(uint256)(uint256)" [PAIR-ID] --rpc-url $RPC
+```
 
+## setSwapFee() 
+
+This function **can only be called by the owner of the contract**
+```
+cast send $ADD "setSwapFee(uint256)(uint256)" [AMOUNT] --rpc-url $RPC --private-key $PRIV
+```
+For the [AMOUNT] field, specify a value. For example, 10 would equal 0.1%, 30 would equal 0.3%. 
+
+For example, if value is set to 10, that means that for every $100 a person exchanges, they will pay a fee of $0.10. 
 
 
 # TODOS:

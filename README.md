@@ -306,9 +306,14 @@ Get The **pairInfo() (also as getPairInfo()):**
 
 **This function is better suited with the ***liquidityPairs()*** function above. Better to use that one since it outputs more relevant information.**
 
-Get the **weth()** contract address:
+Get the **weth()** contract address (mainnet):
 ```
 cast call $ADD "weth()(address)" --rpc-url $RPC
+```
+
+Get the **wethAddress()** contract address (testnet):
+```
+cast call $ADD "wethAddress()(address)" --rpc-url $RPC
 ```
 
 Get the **owner()** of the contract

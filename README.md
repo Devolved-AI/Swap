@@ -289,7 +289,7 @@ Token0 Contract Address
 Token0 Reserve Amount (in wei)
 Token1 Contract Address 
 Token1 Reserve Amount (in wei)
-Total Amount in Pool (in ETH)
+Total Amount in Pool (in wei)
 ```
 
 Get the **pairID()** for a liquidity pair:

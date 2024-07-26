@@ -431,6 +431,20 @@ For the [AMOUNT] field, specify a value. For example, 10 would equal 0.1%, 30 wo
 
 For example, if value is set to 10, that means that for every $100 a person exchanges, they will pay a fee of $0.10. 
 
+## GET THE allowance() OF A WALLET
+
+This command will enable someone to se the spending limit approved and allocated to a wallet address.
+```
+cast call $T1 "allowance(address,address)(uint256)" [WALLET ADDRESS] $ADD --rpc-url $RPC
+```
+
+## GET balanceOf() A WALLET ADDRESS FOR A PARTICULAR TOKEN (in wei)
+```
+cast call $T1 "balanceOf(address)(uint256)" [WALLET ADDRESS] --rpc-url $RPC
+``` 
+
+
+
 
 # TODOS:
 
